@@ -251,13 +251,24 @@ def school_header_data_uri() -> str:
     return f"data:image/png;base64,{data}"
 
 
+def favicon_data_uri() -> str:
+    asset_path = BASE_DIR / "assets" / "icon.png"
+    if not asset_path.exists():
+        return ""
+    data = base64.b64encode(asset_path.read_bytes()).decode("ascii")
+    return f"data:image/png;base64,{data}"
+
+
 def render_page(title: str, body: str) -> bytes:
+    favicon = favicon_data_uri()
+    favicon_link = f'<link rel="icon" type="image/png" href="{favicon}">' if favicon else ""
     html_doc = f"""<!doctype html>
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>{html.escape(title)}</title>
+  {favicon_link}
   <style>
     :root {{
       --bg1: #eff5ff;
@@ -306,11 +317,14 @@ def render_page(title: str, body: str) -> bytes:
     .login-title {{
       margin: 4px 0 12px;
       text-align: center;
-      font-size: clamp(30px, 5vw, 48px);
+      font-size: clamp(24px, 3.6vw, 38px);
       line-height: 1.15;
       letter-spacing: 0.02em;
       color: #18315a;
       font-weight: 900;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }}
     .login-subtitle {{
       margin: 0 auto 26px;
@@ -435,7 +449,7 @@ def render_page(title: str, body: str) -> bytes:
     @media (max-width: 820px) {{
       .card {{ border-radius: 24px; }}
       .login-title {{
-        font-size: clamp(26px, 8vw, 38px);
+        font-size: clamp(20px, 7vw, 30px);
       }}
       .login-form, .login-banner {{
         width: 100%;
@@ -470,7 +484,7 @@ def login_form(error: str = "", student_id: str = "", name: str = "") -> bytes:
     banner_html = f'<img class="login-banner" src="{banner}" alt="上海师范大学附属青浦实验小学">' if banner else ""
     body = f"""
       {banner_html}
-      <h2 class="login-title">上师大附小项目化作品提交系统</h2>
+      <h3 class="login-title">上师大附小项目化作品提交系统</h3>
       <p class="login-subtitle">请输入学籍号后 8 位、姓名和密码进入上传页面。</p>
       {error_block}
       <form class="login-form" method="post" action="/login">
