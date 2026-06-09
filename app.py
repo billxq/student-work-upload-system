@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import base64
 import html
 import json
 import re
@@ -242,6 +243,14 @@ def get_cookie_value(cookie_header: Optional[str], name: str) -> Optional[str]:
     return None
 
 
+def school_header_data_uri() -> str:
+    asset_path = BASE_DIR / "assets" / "school-header.png"
+    if not asset_path.exists():
+        return ""
+    data = base64.b64encode(asset_path.read_bytes()).decode("ascii")
+    return f"data:image/png;base64,{data}"
+
+
 def render_page(title: str, body: str) -> bytes:
     html_doc = f"""<!doctype html>
 <html lang="zh-CN">
@@ -251,14 +260,14 @@ def render_page(title: str, body: str) -> bytes:
   <title>{html.escape(title)}</title>
   <style>
     :root {{
-      --bg1: #0f172a;
-      --bg2: #111827;
-      --card: rgba(255, 255, 255, 0.94);
-      --text: #0f172a;
-      --muted: #475569;
-      --primary: #2563eb;
-      --primary-dark: #1d4ed8;
-      --border: rgba(148, 163, 184, 0.28);
+      --bg1: #eff5ff;
+      --bg2: #dce9ff;
+      --card: rgba(255, 255, 255, 0.96);
+      --text: #1d2748;
+      --muted: #64748b;
+      --primary: #2e67f8;
+      --primary-dark: #1650f0;
+      --border: #d7dfec;
     }}
     * {{ box-sizing: border-box; }}
     html, body {{ min-height: 100%; }}
@@ -270,62 +279,86 @@ def render_page(title: str, body: str) -> bytes:
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: clamp(14px, 4vw, 32px);
+      padding: clamp(14px, 4vw, 34px);
       background:
-        radial-gradient(circle at top left, rgba(59, 130, 246, 0.28), transparent 34%),
-        radial-gradient(circle at top right, rgba(14, 165, 233, 0.18), transparent 28%),
-        linear-gradient(160deg, var(--bg1), var(--bg2) 52%, #0f172a);
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.78), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(120, 168, 255, 0.18), transparent 32%),
+        linear-gradient(160deg, var(--bg1), var(--bg2));
     }}
     .shell {{
-      width: min(100%, 760px);
+      width: min(100%, 1120px);
     }}
     .card {{
       background: var(--card);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      border-radius: 28px;
-      box-shadow: 0 24px 80px rgba(15, 23, 42, 0.34);
+      border: 1px solid rgba(255, 255, 255, 0.92);
+      border-radius: 30px;
+      box-shadow: 0 20px 70px rgba(77, 102, 152, 0.16);
       backdrop-filter: blur(16px);
-      padding: clamp(22px, 4vw, 34px);
+      padding: clamp(22px, 4vw, 42px);
     }}
-    .brand {{
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: rgba(37, 99, 235, 0.1);
-      color: #1d4ed8;
-      font-size: 14px;
-      font-weight: 700;
-      margin-bottom: 14px;
+    .login-banner {{
+      width: min(100%, 1020px);
+      display: block;
+      margin: 0 auto 14px;
+      border-radius: 20px;
+      box-shadow: 0 10px 28px rgba(74, 103, 160, 0.12);
     }}
-    .title {{
-      margin: 0 0 8px;
-      font-size: clamp(24px, 4vw, 34px);
-      line-height: 1.2;
+    .login-title {{
+      margin: 4px 0 12px;
+      text-align: center;
+      font-size: clamp(30px, 5vw, 48px);
+      line-height: 1.15;
+      letter-spacing: 0.02em;
+      color: #18315a;
+      font-weight: 900;
     }}
-    .sub {{
-      margin: 0 0 20px;
-      color: var(--muted);
-      line-height: 1.75;
+    .login-subtitle {{
+      margin: 0 auto 26px;
+      text-align: center;
+      color: #64748b;
+      font-size: clamp(16px, 2vw, 20px);
+      line-height: 1.7;
+      max-width: 760px;
+    }}
+    .login-form {{
+      width: min(100%, 860px);
+      margin: 0 auto;
     }}
     label {{
       display: block;
-      font-weight: 600;
-      margin: 14px 0 8px;
+      font-weight: 800;
+      margin: 18px 0 10px;
+      font-size: 18px;
+      color: #0f172a;
     }}
     input, button {{ font: inherit; }}
     input[type="text"], input[type="password"], input[type="file"] {{
       width: 100%;
-      padding: 13px 14px;
+      padding: 15px 18px;
       border: 1px solid var(--border);
-      border-radius: 14px;
-      background: rgba(255,255,255,0.98);
+      border-radius: 16px;
+      background: #fff;
       outline: none;
+      color: #1f2937;
+      font-size: 18px;
     }}
     input[type="text"]:focus, input[type="password"]:focus {{
-      border-color: rgba(37, 99, 235, 0.62);
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+      border-color: rgba(46, 103, 248, 0.58);
+      box-shadow: 0 0 0 4px rgba(46, 103, 248, 0.1);
+    }}
+    input::placeholder {{
+      color: #94a3b8;
+    }}
+    .login-form .actions {{
+      margin-top: 24px;
+      display: block;
+    }}
+    .login-form .btn {{
+      width: 100%;
+      min-height: 64px;
+      border-radius: 16px;
+      font-size: 22px;
+      box-shadow: 0 14px 26px rgba(46, 103, 248, 0.28);
     }}
     .actions {{
       display: flex;
@@ -385,10 +418,11 @@ def render_page(title: str, body: str) -> bytes:
       margin-bottom: 4px;
     }}
     .hint {{
-      margin-top: 12px;
-      color: var(--muted);
-      font-size: 14px;
+      margin-top: 14px;
+      color: #64748b;
+      font-size: 16px;
       line-height: 1.7;
+      text-align: center;
     }}
     .file-list {{
       margin: 12px 0 0;
@@ -399,12 +433,22 @@ def render_page(title: str, body: str) -> bytes:
       word-break: break-all;
     }}
     @media (max-width: 820px) {{
-      .card {{ border-radius: 22px; }}
-      .btn, .actions > * {{
+      .card {{ border-radius: 24px; }}
+      .login-title {{
+        font-size: clamp(26px, 8vw, 38px);
+      }}
+      .login-form, .login-banner {{
         width: 100%;
       }}
-      .actions {{
-        gap: 10px;
+      .login-form .btn {{
+        min-height: 58px;
+        font-size: 20px;
+      }}
+      label {{
+        font-size: 16px;
+      }}
+      input[type="text"], input[type="password"], input[type="file"] {{
+        font-size: 16px;
       }}
     }}
   </style>
@@ -422,16 +466,19 @@ def render_page(title: str, body: str) -> bytes:
 
 def login_form(error: str = "", student_id: str = "", name: str = "") -> bytes:
     error_block = f'<div class="alert error">{html.escape(error)}</div>' if error else ""
+    banner = school_header_data_uri()
+    banner_html = f'<img class="login-banner" src="{banner}" alt="上海师范大学附属青浦实验小学">' if banner else ""
     body = f"""
-      <h2 class="title">上师大附小项目化作品提交系统</h2>
-      <p class="sub">请输入学籍号后 8 位、姓名和密码进入上传页面。</p>
+      {banner_html}
+      <h2 class="login-title">上师大附小项目化作品提交系统</h2>
+      <p class="login-subtitle">请输入学籍号后 8 位、姓名和密码进入上传页面。</p>
       {error_block}
-      <form method="post" action="/login">
+      <form class="login-form" method="post" action="/login">
         <label for="student_id">学籍号后 8 位</label>
         <input id="student_id" name="student_id" type="text" value="{html.escape(student_id)}" autocomplete="off" inputmode="numeric" maxlength="8" placeholder="例如：20250101" required>
 
         <label for="name">姓名</label>
-        <input id="name" name="name" type="text" value="{html.escape(name)}" autocomplete="off" required>
+        <input id="name" name="name" type="text" value="{html.escape(name)}" autocomplete="off" placeholder="请输入姓名" required>
 
         <label for="password">密码</label>
         <input id="password" name="password" type="password" value="" placeholder="默认：111111" required>
