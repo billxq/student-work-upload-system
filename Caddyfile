@@ -1,0 +1,6 @@
+# Replace with your real domain name.
+work.ssfx.org {
+	reverse_proxy 127.0.0.1:8000
+	encode zstd gzip
+}
+
