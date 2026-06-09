@@ -1,0 +1,4 @@
+*.xlsx
+uploads/
+__pycache__/
+data/upload_records.json
