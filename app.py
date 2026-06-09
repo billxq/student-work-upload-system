@@ -259,6 +259,17 @@ def favicon_data_uri() -> str:
     return f"data:image/png;base64,{data}"
 
 
+def page_header(title: str, subtitle: str = "") -> str:
+    banner = school_header_data_uri()
+    banner_html = f'<img class="login-banner" src="{banner}" alt="上海师范大学附属青浦实验小学">' if banner else ""
+    subtitle_html = f'<p class="login-subtitle">{html.escape(subtitle)}</p>' if subtitle else ""
+    return f"""
+      {banner_html}
+      <h3 class="login-title">{html.escape(title)}</h3>
+      {subtitle_html}
+    """
+
+
 def render_page(title: str, body: str) -> bytes:
     favicon = favicon_data_uri()
     favicon_link = f'<link rel="icon" type="image/png" href="{favicon}">' if favicon else ""
@@ -290,71 +301,71 @@ def render_page(title: str, body: str) -> bytes:
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: clamp(14px, 4vw, 34px);
+      padding: clamp(12px, 3vw, 28px);
       background:
         radial-gradient(circle at top left, rgba(255, 255, 255, 0.78), transparent 30%),
         radial-gradient(circle at bottom right, rgba(120, 168, 255, 0.18), transparent 32%),
         linear-gradient(160deg, var(--bg1), var(--bg2));
     }}
     .shell {{
-      width: min(100%, 1120px);
+      width: min(100%, 560px);
     }}
     .card {{
       background: var(--card);
       border: 1px solid rgba(255, 255, 255, 0.92);
-      border-radius: 30px;
+      border-radius: 24px;
       box-shadow: 0 20px 70px rgba(77, 102, 152, 0.16);
       backdrop-filter: blur(16px);
-      padding: clamp(22px, 4vw, 42px);
+      padding: clamp(14px, 2.4vw, 22px);
     }}
     .login-banner {{
-      width: min(100%, 1020px);
+      width: min(100%, 430px);
       display: block;
-      margin: 0 auto 14px;
-      border-radius: 20px;
+      margin: 0 auto 12px;
+      border-radius: 14px;
       box-shadow: 0 10px 28px rgba(74, 103, 160, 0.12);
     }}
     .login-title {{
-      margin: 4px 0 12px;
+      margin: 4px 0 8px;
       text-align: center;
-      font-size: clamp(24px, 3.6vw, 38px);
-      line-height: 1.15;
-      letter-spacing: 0.02em;
+      font-size: clamp(17px, 2.2vw, 25px);
+      line-height: 1.1;
+      letter-spacing: 0.01em;
       color: #18315a;
       font-weight: 900;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      max-width: 22ch;
+      margin-left: auto;
+      margin-right: auto;
     }}
     .login-subtitle {{
-      margin: 0 auto 26px;
+      margin: 0 auto 14px;
       text-align: center;
       color: #64748b;
-      font-size: clamp(16px, 2vw, 20px);
-      line-height: 1.7;
-      max-width: 760px;
+      font-size: clamp(13px, 1.4vw, 15px);
+      line-height: 1.6;
+      max-width: 460px;
     }}
     .login-form {{
-      width: min(100%, 860px);
+      width: min(100%, 430px);
       margin: 0 auto;
     }}
     label {{
       display: block;
       font-weight: 800;
-      margin: 18px 0 10px;
-      font-size: 18px;
+      margin: 12px 0 6px;
+      font-size: 14px;
       color: #0f172a;
     }}
     input, button {{ font: inherit; }}
     input[type="text"], input[type="password"], input[type="file"] {{
       width: 100%;
-      padding: 15px 18px;
+      padding: 12px 14px;
       border: 1px solid var(--border);
-      border-radius: 16px;
+      border-radius: 12px;
       background: #fff;
       outline: none;
       color: #1f2937;
-      font-size: 18px;
+      font-size: 14px;
     }}
     input[type="text"]:focus, input[type="password"]:focus {{
       border-color: rgba(46, 103, 248, 0.58);
@@ -364,14 +375,14 @@ def render_page(title: str, body: str) -> bytes:
       color: #94a3b8;
     }}
     .login-form .actions {{
-      margin-top: 24px;
+      margin-top: 16px;
       display: block;
     }}
     .login-form .btn {{
       width: 100%;
-      min-height: 64px;
-      border-radius: 16px;
-      font-size: 22px;
+      min-height: 46px;
+      border-radius: 12px;
+      font-size: 17px;
       box-shadow: 0 14px 26px rgba(46, 103, 248, 0.28);
     }}
     .actions {{
@@ -401,9 +412,9 @@ def render_page(title: str, body: str) -> bytes:
       box-shadow: none;
     }}
     .alert {{
-      padding: 14px 16px;
-      border-radius: 16px;
-      margin-bottom: 18px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      margin-bottom: 12px;
       line-height: 1.6;
     }}
     .alert.error {{
@@ -432,9 +443,9 @@ def render_page(title: str, body: str) -> bytes:
       margin-bottom: 4px;
     }}
     .hint {{
-      margin-top: 14px;
+      margin-top: 10px;
       color: #64748b;
-      font-size: 16px;
+      font-size: 13px;
       line-height: 1.7;
       text-align: center;
     }}
@@ -447,22 +458,29 @@ def render_page(title: str, body: str) -> bytes:
       word-break: break-all;
     }}
     @media (max-width: 820px) {{
-      .card {{ border-radius: 24px; }}
+      body {{
+        align-items: flex-start;
+      }}
+      .card {{
+        border-radius: 18px;
+        padding: 14px 12px 16px;
+      }}
       .login-title {{
-        font-size: clamp(20px, 7vw, 30px);
+        font-size: clamp(18px, 6vw, 22px);
+        max-width: 100%;
       }}
       .login-form, .login-banner {{
         width: 100%;
       }}
       .login-form .btn {{
-        min-height: 58px;
-        font-size: 20px;
+        min-height: 44px;
+        font-size: 16px;
       }}
       label {{
-        font-size: 16px;
+        font-size: 13px;
       }}
       input[type="text"], input[type="password"], input[type="file"] {{
-        font-size: 16px;
+        font-size: 14px;
       }}
     }}
   </style>
@@ -480,12 +498,8 @@ def render_page(title: str, body: str) -> bytes:
 
 def login_form(error: str = "", student_id: str = "", name: str = "") -> bytes:
     error_block = f'<div class="alert error">{html.escape(error)}</div>' if error else ""
-    banner = school_header_data_uri()
-    banner_html = f'<img class="login-banner" src="{banner}" alt="上海师范大学附属青浦实验小学">' if banner else ""
     body = f"""
-      {banner_html}
-      <h3 class="login-title">上师大附小项目化作品提交系统</h3>
-      <p class="login-subtitle">请输入学籍号后 8 位、姓名和密码进入上传页面。</p>
+      {page_header("上师大附小项目化作品提交系统", "请输入学籍号后 8 位、姓名和密码进入上传页面。")}
       {error_block}
       <form class="login-form" method="post" action="/login">
         <label for="student_id">学籍号后 8 位</label>
@@ -510,11 +524,10 @@ def upload_form(student: Student, message: str = "", error: str = "") -> bytes:
     msg_block = f'<div class="alert success">{html.escape(message)}</div>' if message else ""
     err_block = f'<div class="alert error">{html.escape(error)}</div>' if error else ""
     body = f"""
-      <h2 class="title">上传作品</h2>
-      <p class="sub">当前登录学生：<b>{html.escape(student.class_name)}</b> 班 <b>{html.escape(student.name)}</b>（{html.escape(student.student_id)}）</p>
+      {page_header("上传作品", f"当前登录学生：{student.class_name} 班 {student.name}（{student.student_id}）")}
       {msg_block}
       {err_block}
-      <form method="post" action="/upload" enctype="multipart/form-data">
+      <form class="login-form" method="post" action="/upload" enctype="multipart/form-data">
         <label for="work_type">作品类型</label>
         <input id="work_type" name="work_type" type="text" placeholder="例如：绘画作品 / 手工作品 / 语文作业" required>
 
@@ -536,8 +549,7 @@ def success_page(student: Student, upload_result: dict) -> bytes:
         f"<li>{html.escape(item)}</li>" for item in upload_result.get("saved_files", [])
     )
     body = f"""
-      <h2 class="title">上传成功</h2>
-      <p class="sub">作品已经保存完成，下面是本次上传的信息。</p>
+      {page_header("上传成功", "作品已经保存完成，下面是本次上传的信息。")}
       <div class="alert success">上传成功</div>
       <div class="meta-grid">
         <div class="meta-item"><strong>学籍号</strong>{html.escape(student.student_id)}</div>
