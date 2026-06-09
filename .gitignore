@@ -1,4 +1,5 @@
 *.xlsx
+github_token
 uploads/
 __pycache__/
 data/upload_records.json
